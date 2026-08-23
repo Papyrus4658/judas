@@ -1,0 +1,9 @@
+This is a simple packet capture tool.
+I named it “Judas.”
+This name is a recursive acronym for “Judas: Ubiquitous Data Analyzing System” or simply means a peephole.
+
+これはシンプルなパケットキャプチャツールです。
+私はこれを「Judas」と名付けました。
+この名前は、「Judas: Ubiquitous Data Analyzing System」の頭文字をとった再帰的頭字語であり、あるいは単に「のぞき穴」を意味しています。
+
+Jabberwocky underlies dawns and sunsets.
