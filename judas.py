@@ -1,3 +1,4 @@
+import datetime
 import tkinter as tk
 import tkinter.font as tkfont
 import tkinter.messagebox as mb
@@ -32,7 +33,7 @@ class MainWin:
             font=proportional,
             width=60,
         )
-        combo.set("ネットワークインターフェースを選択")
+        combo.set(c.COMBO_DEFAULT)
 
         # フィルターを設定
         filter_frame = tk.Frame(config_frame)
@@ -74,8 +75,6 @@ class MainWin:
         )
 
         # ポート番号入力欄を設定
-        https_port = tk.IntVar(value=443)
-
         port_frame = tk.Frame(config_frame)
         port_label = tk.Label(port_frame, text="ポート番号", font=proportional)
         port = tk.Spinbox(
@@ -84,7 +83,7 @@ class MainWin:
             to=65535,
             increment=1,
             font=fixed_width,
-            textvariable=https_port,
+            textvariable=tk.IntVar(value=c.HTTPS_PORT),
         )
 
         # IPアドレス入力欄を設定
@@ -114,7 +113,7 @@ class MainWin:
             text="開始",
             font=proportional,
             command=lambda: self.start_capture(
-                start_button, stop_button, captured_list
+                start_button, stop_button, combo.get(), port.get(), captured_list
             ),
         )
         stop_button = tk.Button(
@@ -217,13 +216,43 @@ class MainWin:
         iface_names = list(scapy.interfaces.ifaces.data.keys())
         return iface_names
 
-    def start_capture(self, start_button, stop_button, captured_list):
+    def start_capture(self, start_button, stop_button, combo, port, captured_list):
+        if combo == c.COMBO_DEFAULT:
+            mb.showwarning(c.NOT_SNIFF, message=c.COMBO_DEFAULT)
+            return
+
+        filter_list = ""
+
+        if self.tcp_checked.get():
+            filter_list += "tcp "
+
+        if self.udp_checked.get():
+            filter_list += "udp "
+
+        if self.sctp_checked.get():
+            filter_list += "sctp "
+
+        if self.arp_checked.get():
+            filter_list += "arp "
+
+        try:
+            if int(port) >= 0 and int(port) <= 65535:
+                filter_list += "port " + port
+        except ValueError:
+            mb.showwarning(c.NOT_SNIFF, message=c.PORT_NOT_INT)
+            return
+
+        print(filter_list)
+
         self.switch_buttons(start_button, stop_button)
 
-        # mb.showinfo(
-        #     "tcpが選択されています"
-        #     if self.tcp_checked.get()
-        #     else "tcpが選択されていません"
+        now = datetime.now().strftime("%H:%M:%S")
+        packets = sniff(count=1, iface=combo, filter="udp port 443")
+        print(packets.summary())
+        # captured_list.insert(
+        #     "",
+        #     "end",
+        #     value=(now, packets[0].show(), "は", "に", "ほ", "へ", "と", "ち"),
         # )
 
     def stop_capture(self, start_button, stop_button):
