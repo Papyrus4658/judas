@@ -1,10 +1,11 @@
 import datetime
+import sys
 import tkinter as tk
 import tkinter.font as tkfont
 import tkinter.messagebox as mb
 from tkinter import ttk
 
-from scapy.all import *
+from scapy.all import AsyncSniffer, Scapy_Exception, scapy
 
 import constants as c
 
@@ -129,6 +130,12 @@ class MainWin:
             state=tk.DISABLED,
             command=lambda: self.delete_history(captured_list),
         )
+        exit_button = tk.Button(
+            buttons_frame,
+            text="終了",
+            font=proportional,
+            command=lambda: self.exit_app(),
+        )
 
         # パケット一覧表示欄を設定
         captured_list_frame = tk.Frame(self.root)
@@ -202,6 +209,7 @@ class MainWin:
         # ボタンフレームに配置
         start_button.grid(row=1, column=1)
         delete_button.grid(row=5, column=1)
+        exit_button.grid(row=9, column=1)
 
         # パケット一覧フレームに配置
         captured_list_title.grid(row=1, column=1)
@@ -221,41 +229,53 @@ class MainWin:
             mb.showwarning(c.NOT_SNIFF, message=c.COMBO_DEFAULT)
             return
 
-        filter_list = ""
+        filters_list = ""
 
         if self.tcp_checked.get():
-            filter_list += "tcp "
+            filters_list += "tcp "
 
         if self.udp_checked.get():
-            filter_list += "udp "
+            filters_list += "udp "
 
         if self.sctp_checked.get():
-            filter_list += "sctp "
+            filters_list += "sctp "
 
         if self.arp_checked.get():
-            filter_list += "arp "
+            filters_list += "arp "
 
         try:
-            if int(port) >= 0 and int(port) <= 65535:
-                filter_list += "port " + port
+            if port != "" and int(port) >= 0 and int(port) <= 65535:
+                self.sniffer = AsyncSniffer(
+                    iface=combo,
+                    filter="port " + port,
+                    prn=self.packet_callback,
+                    store=False,
+                )
+
+                self.sniffer.start()
+
+                self.switch_buttons(start_button, stop_button)
         except ValueError:
             mb.showwarning(c.NOT_SNIFF, message=c.PORT_NOT_INT)
             return
 
-        print(filter_list)
-
-        self.switch_buttons(start_button, stop_button)
-
-        now = datetime.now().strftime("%H:%M:%S")
-        packets = sniff(count=1, iface=combo, filter="udp port 443")
-        print(packets.summary())
-        # captured_list.insert(
-        #     "",
-        #     "end",
-        #     value=(now, packets[0].show(), "は", "に", "ほ", "へ", "と", "ち"),
-        # )
+    def packet_callback(self, pkt):
+        now = datetime.now().strftime("%H:%M:%S")  # treeviewにinsert予定
+        print(pkt.summary())
+        print(type(pkt.summary()))
 
     def stop_capture(self, start_button, stop_button):
+        if hasattr(self, "sniffer") and self.sniffer.running:
+            try:
+                self.sniffer.stop()
+            except Scapy_Exception:
+                # socket初期化が完了する前に停止しようとした場合
+                self.root.after(
+                    100, lambda: self.stop_capture(start_button, stop_button)
+                )
+
+                return
+
         self.switch_buttons(stop_button, start_button)
 
     def switch_buttons(self, enable, disable):
@@ -267,6 +287,9 @@ class MainWin:
 
     def delete_history(self, captured_list):
         captured_list.delete()
+
+    def exit_app(self):
+        sys.exit(0)
 
 
 def main():
