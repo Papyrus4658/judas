@@ -1,5 +1,4 @@
 import ipaddress
-import queue
 import sys
 import tkinter as tk
 import tkinter.font as tkfont
@@ -24,8 +23,6 @@ import constants as c
 
 class MainWin:
     def __init__(self):
-        # キューとパケット保持用の辞書を追加
-        self.packet_queue = queue.Queue()
         self.packet_store = {}
 
         # メインウィンドウを設定
@@ -56,7 +53,6 @@ class MainWin:
             values=iface_names,
             state="readonly",
             font=proportional,
-            # width=30,
         )
         interface.set(iface_names[0])
 
@@ -101,7 +97,11 @@ class MainWin:
 
         # ポート番号入力欄を設定
         port_frame = tk.Frame(config_frame)
-        port_label = tk.Label(port_frame, text=c.PROMPT_INPUT_PORT, font=proportional)
+        port_label = tk.Label(
+            port_frame,
+            text=c.PROMPT_INPUT_PORT,
+            font=proportional,
+        )
         port = tk.Spinbox(
             port_frame,
             from_=0,
@@ -143,7 +143,6 @@ class MainWin:
                 interface.get(),
                 port.get(),
                 ip.get(),
-                captured_list,
             ),
         )
         stop_button = tk.Button(
@@ -152,12 +151,12 @@ class MainWin:
             font=proportional,
             command=lambda: self.stop_capture(start_button, stop_button),
         )
-        delete_button = tk.Button(
+        self.delete_button = tk.Button(
             buttons_frame,
             text=c.DELETE,
             font=proportional,
             state=tk.DISABLED,
-            command=lambda: self.delete_history(captured_list),
+            command=lambda: self.delete_record(),
         )
         exit_button = tk.Button(
             buttons_frame,
@@ -173,46 +172,73 @@ class MainWin:
             text=c.CAPTURED_LIST,
             font=proportional,
         )
-        captured_list = ttk.Treeview(
+        self.captured_list = ttk.Treeview(
             captured_list_frame,
             columns=c.COLS,
             height=15,
             show="headings",
         )
+        self.captured_list.bind("<<TreeviewSelect>>", self.display_hex_dump)
 
         for col in c.COLS:
-            captured_list.heading(col, text=col)
+            self.captured_list.heading(col, text=col)
 
-        yscroll = ttk.Scrollbar(
+        list_yscroll = ttk.Scrollbar(
             captured_list_frame,
             orient=tk.VERTICAL,
-            command=captured_list.yview,
+            command=self.captured_list.yview,
         )
-        captured_list.configure(yscroll=yscroll.set)
+        self.captured_list.configure(yscroll=list_yscroll.set)
 
         style = ttk.Style()
-        style.configure("Treeview", font=fixed_width)
+        style.configure("Treeview", font=fixed_width, rowheight=25)
         style.configure("Treeview.Heading", font=proportional)
 
         # 16進ダンプ表示欄を設定
         hex_dump_frame = tk.Frame(self.root)
-        hex_dump_title = tk.Label(hex_dump_frame, text=c.HEX_DUMP, font=proportional)
-        hex_dump = tk.Text(hex_dump_frame, font=fixed_width)
-        hex_dump.configure(font=fixed_width)
+        hex_dump_title = tk.Label(
+            hex_dump_frame,
+            text=c.HEX_DUMP,
+            font=proportional,
+        )
+        self.hex_dump = tk.Text(hex_dump_frame, font=fixed_width, wrap=tk.NONE)
+
+        details_yscroll = ttk.Scrollbar(
+            hex_dump_frame,
+            orient=tk.VERTICAL,
+            command=self.hex_dump.yview,
+        )
+        self.hex_dump.configure(yscroll=details_yscroll.set)
+
+        details_xscroll = ttk.Scrollbar(
+            hex_dump_frame,
+            orient=tk.HORIZONTAL,
+            command=self.hex_dump.xview,
+        )
+        self.hex_dump.configure(xscroll=details_xscroll.set)
 
         # rootの1列目を伸縮可能に設定
         self.root.grid_columnconfigure(1, weight=1)
+        self.root.grid_rowconfigure(5, weight=1)  # パケット一覧の列
+        self.root.grid_rowconfigure(9, weight=1)  # 16進ダンプの列
 
-        # captured_list_frame内の列も伸縮可能に設定
+        # パケット一覧の列も伸縮可能に設定
         captured_list_frame.grid_columnconfigure(1, weight=1)
+        captured_list_frame.grid_rowconfigure(5, weight=1)
 
         # 16進ダンプも伸縮可能に設定
         hex_dump_frame.grid_columnconfigure(1, weight=1)
+        hex_dump_frame.grid_rowconfigure(5, weight=1)
 
         # ウィンドウに配置
         config_frame.grid(row=1, column=1)
         buttons_frame.grid(row=1, column=5)
-        captured_list_frame.grid(row=5, column=1, sticky="nsew", columnspan=5)
+        captured_list_frame.grid(
+            row=5,
+            column=1,
+            sticky="nsew",
+            columnspan=5,
+        )
         hex_dump_frame.grid(row=9, column=1, sticky="nsew", columnspan=5)
 
         # 設定フレームに配置
@@ -242,25 +268,32 @@ class MainWin:
 
         # ボタンフレームに配置
         start_button.grid(row=1, column=1)
-        delete_button.grid(row=5, column=1)
+        self.delete_button.grid(row=5, column=1)
         exit_button.grid(row=9, column=1)
 
         # パケット一覧フレームに配置
         captured_list_title.grid(row=1, column=1)
-        captured_list.grid(row=5, column=1, sticky="nsew")
-        yscroll.grid(row=5, column=5, sticky="ns")
+        self.captured_list.grid(row=5, column=1, sticky="nsew")
+        list_yscroll.grid(row=5, column=5, sticky="ns")
 
         # 16進ダンプフレームに配置
         hex_dump_title.grid(row=1, column=1)
-        hex_dump.grid(row=5, column=1, sticky="nsew")
+        self.hex_dump.grid(row=5, column=1, sticky="nsew")
+        details_yscroll.grid(row=5, column=5, sticky="ns")
+        details_xscroll.grid(row=9, column=1, sticky="ew")
 
     def get_ifaces(self):
         iface_names = list(scapy.interfaces.ifaces.data.keys())
         return iface_names
 
     def start_capture(
-        self, start_button, stop_button, interface, port, ip, captured_list
-    ):
+        self,
+        start_button,
+        stop_button,
+        interface,
+        port,
+        ip,
+    ) -> None:
         if interface == "":
             mb.showwarning(c.NOT_SNIFF, message=c.PROMPT_SELECT_INTERFACE)
             return
@@ -268,12 +301,17 @@ class MainWin:
         input_filter = ""
 
         if ip != "":
-            ip = ipaddress.ip_address(ip)
-            print(type(ip))
-
             try:
-                if isinstance(ip, (ipaddress.IPv4Address, ipaddress.IPv6Address)):
-                    input_filter += "host " + ip
+                parsed_ip = ipaddress.ip_address(ip)
+
+                if isinstance(
+                    parsed_ip,
+                    (
+                        ipaddress.IPv4Address,
+                        ipaddress.IPv6Address,
+                    ),
+                ):
+                    input_filter += "host " + parsed_ip
             except ValueError:
                 mb.showwarning(
                     c.UNABLE_START,
@@ -301,14 +339,13 @@ class MainWin:
 
         self.switch_buttons(start_button, stop_button)
 
-    def packet_callback(self, pkt):
+    def packet_callback(self, pkt) -> None:
         if not self.protocol_checked(pkt):
             return
 
-        now = datetime.now().strftime("%H:%M:%S.%f")
-        print(pkt.summary())
+        self.create_row(pkt)
 
-    def protocol_checked(self, pkt):
+    def protocol_checked(self, pkt) -> bool:
         if pkt.haslayer(TCP):
             return self.tcp_checked.get()
 
@@ -323,27 +360,95 @@ class MainWin:
 
         return False
 
-    def create_row(self):
+    def create_row(self, pkt):
+        now = datetime.now().strftime("%H:%M:%S.%f")
+        size = len(pkt)
 
-        return
+        if pkt.haslayer(TCP):
+            protocol = "TCP"
+            sport = pkt[TCP].sport
+            dport = pkt[TCP].dport
+            flags = str(pkt[TCP].flags)
+        elif pkt.haslayer(UDP):
+            protocol = "UDP"
+            sport = pkt[UDP].sport
+            dport = pkt[UDP].dport
+            flags = ""
+        elif pkt.haslayer(SCTP):
+            protocol = "SCTP"
+            sport = pkt[SCTP].sport
+            dport = pkt[SCTP].dport
+            flags = ""
+        elif pkt.haslayer(ARP):
+            protocol = "ARP"
+            sport = pkt[ARP].sport
+            dport = pkt[ARP].dport
+            flags = f"op={pkt[ARP].op}"
+        else:
+            return
 
-    def stop_capture(self, start_button, stop_button):
+        if pkt.haslayer(IP):
+            src = pkt[IP].src
+            dst = pkt[IP].dst
+        elif pkt.haslayer(IPv6):
+            src = pkt[IPv6].src
+            dst = pkt[IPv6].dst
+        else:
+            return
+
+        iid = self.captured_list.insert(
+            parent="",
+            index="end",
+            values=(now, protocol, src, sport, dst, dport, flags, size),
+        )
+
+        if self.autoscroll_checked.get():
+            self.captured_list.yview_moveto(1.0)
+
+        # 消去ボタンを押せるようにする
+        if self.delete_button["state"] == tk.DISABLED:
+            self.delete_button.configure(state=tk.ACTIVE)
+
+        self.packet_store[iid] = pkt
+
+    def stop_capture(self, start_button, stop_button) -> None:
         if hasattr(self, "sniffer") and self.sniffer.running:
             self.sniffer.stop()
 
         self.switch_buttons(stop_button, start_button)
 
-    def switch_buttons(self, enable, disable):
+    def switch_buttons(self, enable, disable) -> None:
         enable.grid_forget()
         enable.configure(state=tk.DISABLED)
 
         disable.grid(row=1, column=1)
         disable.configure(state=tk.ACTIVE)
 
-    def delete_history(self, captured_list):
-        captured_list.delete()
+    def display_hex_dump(self, event) -> None:
+        record = self.captured_list.selection()  # 選択した列のidを取得
 
-    def exit_app(self):
+        if not record:
+            return
+
+        pkt = self.packet_store[record[0]]  # idからパケットを取得
+
+        details = (  # パケットのレイヤー構造と16進ダンプを結合
+            "===Packet Structure===\n"
+            + pkt.show(dump=True)
+            + "\n===Hex Dump===\n"
+            + hexdump(pkt, dump=True)
+        )
+
+        self.hex_dump.delete("1.0", tk.END)  # 既存の内容を削除
+        self.hex_dump.insert(tk.END, details)  # 詳細を書き込み
+
+    def delete_record(self) -> None:
+        self.captured_list.delete(*self.captured_list.get_children())
+        self.packet_store.clear()
+        self.hex_dump.delete("1.0", tk.END)
+        self.delete_button.configure(state=tk.DISABLED)
+
+    def exit_app(self) -> None:
         sys.exit(0)
 
 
