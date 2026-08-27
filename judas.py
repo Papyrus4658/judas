@@ -1,17 +1,33 @@
-import datetime
+import ipaddress
+import queue
 import sys
 import tkinter as tk
 import tkinter.font as tkfont
 import tkinter.messagebox as mb
+from datetime import datetime
 from tkinter import ttk
 
-from scapy.all import AsyncSniffer, Scapy_Exception, scapy
+from scapy.all import (
+    ARP,
+    IP,
+    SCTP,
+    TCP,
+    UDP,
+    AsyncSniffer,
+    IPv6,
+    hexdump,
+    scapy,
+)
 
 import constants as c
 
 
 class MainWin:
     def __init__(self):
+        # キューとパケット保持用の辞書を追加
+        self.packet_queue = queue.Queue()
+        self.packet_store = {}
+
         # メインウィンドウを設定
         self.root = tk.Tk()
         max_width = self.root.winfo_screenwidth()
@@ -27,14 +43,22 @@ class MainWin:
         config_frame = tk.Frame(self.root)
 
         # プルダウンメニューを設定
-        combo = ttk.Combobox(
-            config_frame,
-            values=self.get_ifaces(),
+        interface_frame = tk.Frame(config_frame)
+
+        interface_label = tk.Label(
+            interface_frame, text=c.PROMPT_SELECT_INTERFACE, font=proportional
+        )
+
+        iface_names = self.get_ifaces()
+
+        interface = ttk.Combobox(
+            interface_frame,
+            values=iface_names,
             state="readonly",
             font=proportional,
-            width=60,
+            # width=30,
         )
-        combo.set(c.COMBO_DEFAULT)
+        interface.set(iface_names[0])
 
         # フィルターを設定
         filter_frame = tk.Frame(config_frame)
@@ -77,7 +101,7 @@ class MainWin:
 
         # ポート番号入力欄を設定
         port_frame = tk.Frame(config_frame)
-        port_label = tk.Label(port_frame, text="ポート番号", font=proportional)
+        port_label = tk.Label(port_frame, text=c.PROMPT_INPUT_PORT, font=proportional)
         port = tk.Spinbox(
             port_frame,
             from_=0,
@@ -91,10 +115,10 @@ class MainWin:
         ipaddress_frame = tk.Frame(config_frame)
         ipaddress_label = tk.Label(
             ipaddress_frame,
-            text="IPアドレス",
+            text=c.PROMPT_INPUT_IP,
             font=proportional,
         )
-        ipaddress = tk.Entry(ipaddress_frame, font=fixed_width)
+        ip = tk.Entry(ipaddress_frame, font=fixed_width)
 
         # 自動スクロール選択ボタンを設定
         self.autoscroll_checked = tk.BooleanVar()
@@ -103,7 +127,7 @@ class MainWin:
         autoscroll = tk.Checkbutton(
             config_frame,
             variable=self.autoscroll_checked,
-            text="自動スクロール",
+            text=c.SWITCH_AUTOSCROLL,
             font=proportional,
         )
 
@@ -111,28 +135,33 @@ class MainWin:
         buttons_frame = tk.Frame(self.root)
         start_button = tk.Button(
             buttons_frame,
-            text="開始",
+            text=c.START,
             font=proportional,
             command=lambda: self.start_capture(
-                start_button, stop_button, combo.get(), port.get(), captured_list
+                start_button,
+                stop_button,
+                interface.get(),
+                port.get(),
+                ip.get(),
+                captured_list,
             ),
         )
         stop_button = tk.Button(
             buttons_frame,
-            text="停止",
+            text=c.STOP,
             font=proportional,
             command=lambda: self.stop_capture(start_button, stop_button),
         )
         delete_button = tk.Button(
             buttons_frame,
-            text="消去",
+            text=c.DELETE,
             font=proportional,
             state=tk.DISABLED,
             command=lambda: self.delete_history(captured_list),
         )
         exit_button = tk.Button(
             buttons_frame,
-            text="終了",
+            text=c.EXIT,
             font=proportional,
             command=lambda: self.exit_app(),
         )
@@ -141,7 +170,7 @@ class MainWin:
         captured_list_frame = tk.Frame(self.root)
         captured_list_title = tk.Label(
             captured_list_frame,
-            text="パケット一覧",
+            text=c.CAPTURED_LIST,
             font=proportional,
         )
         captured_list = ttk.Treeview(
@@ -167,30 +196,35 @@ class MainWin:
 
         # 16進ダンプ表示欄を設定
         hex_dump_frame = tk.Frame(self.root)
-        hex_dump_title = tk.Label(
-            hex_dump_frame, text="選択パケットの16進ダンプ", font=proportional
-        )
+        hex_dump_title = tk.Label(hex_dump_frame, text=c.HEX_DUMP, font=proportional)
         hex_dump = tk.Text(hex_dump_frame, font=fixed_width)
         hex_dump.configure(font=fixed_width)
 
-        # root の1列目を伸縮可能に設定
+        # rootの1列目を伸縮可能に設定
         self.root.grid_columnconfigure(1, weight=1)
 
-        # captured_list_frame 内の列も伸縮可能に
+        # captured_list_frame内の列も伸縮可能に設定
         captured_list_frame.grid_columnconfigure(1, weight=1)
+
+        # 16進ダンプも伸縮可能に設定
+        hex_dump_frame.grid_columnconfigure(1, weight=1)
 
         # ウィンドウに配置
         config_frame.grid(row=1, column=1)
-        buttons_frame.grid(row=1, column=5, padx=100)
+        buttons_frame.grid(row=1, column=5)
         captured_list_frame.grid(row=5, column=1, sticky="nsew", columnspan=5)
-        hex_dump_frame.grid(row=9, column=1)
+        hex_dump_frame.grid(row=9, column=1, sticky="nsew", columnspan=5)
 
         # 設定フレームに配置
-        combo.grid(row=1, column=1)
-        filter_frame.grid(row=1, column=5)
-        port_frame.grid(row=5, column=1)
-        ipaddress_frame.grid(row=5, column=5)
-        autoscroll.grid(row=1, column=9)
+        interface_frame.grid(row=1, column=1, rowspan=5)
+        port_frame.grid(row=1, column=5, rowspan=5)
+        ipaddress_frame.grid(row=1, column=9, rowspan=5)
+        filter_frame.grid(row=1, column=13)
+        autoscroll.grid(row=5, column=13)
+
+        # ネットワークインターフェースフレームに配置
+        interface_label.grid(row=1, column=1)
+        interface.grid(row=5, column=1)
 
         # フィルターフレームに配置
         tcp.grid(row=1, column=1)
@@ -204,7 +238,7 @@ class MainWin:
 
         # IPアドレスフレームに配置
         ipaddress_label.grid(row=1, column=1)
-        ipaddress.grid(row=5, column=1)
+        ip.grid(row=5, column=1)
 
         # ボタンフレームに配置
         start_button.grid(row=1, column=1)
@@ -218,63 +252,84 @@ class MainWin:
 
         # 16進ダンプフレームに配置
         hex_dump_title.grid(row=1, column=1)
-        hex_dump.grid(row=5, column=1)
+        hex_dump.grid(row=5, column=1, sticky="nsew")
 
     def get_ifaces(self):
         iface_names = list(scapy.interfaces.ifaces.data.keys())
         return iface_names
 
-    def start_capture(self, start_button, stop_button, combo, port, captured_list):
-        if combo == c.COMBO_DEFAULT:
-            mb.showwarning(c.NOT_SNIFF, message=c.COMBO_DEFAULT)
+    def start_capture(
+        self, start_button, stop_button, interface, port, ip, captured_list
+    ):
+        if interface == "":
+            mb.showwarning(c.NOT_SNIFF, message=c.PROMPT_SELECT_INTERFACE)
             return
 
-        filters_list = ""
+        input_filter = ""
 
-        if self.tcp_checked.get():
-            filters_list += "tcp "
+        if ip != "":
+            ip = ipaddress.ip_address(ip)
+            print(type(ip))
 
-        if self.udp_checked.get():
-            filters_list += "udp "
-
-        if self.sctp_checked.get():
-            filters_list += "sctp "
-
-        if self.arp_checked.get():
-            filters_list += "arp "
+            try:
+                if isinstance(ip, (ipaddress.IPv4Address, ipaddress.IPv6Address)):
+                    input_filter += "host " + ip
+            except ValueError:
+                mb.showwarning(
+                    c.UNABLE_START,
+                    message=c.IP_NOT_FORMATTED,
+                )
 
         try:
             if port != "" and int(port) >= 0 and int(port) <= 65535:
-                self.sniffer = AsyncSniffer(
-                    iface=combo,
-                    filter="port " + port,
-                    prn=self.packet_callback,
-                    store=False,
-                )
+                if input_filter != "":
+                    input_filter += " and "
 
-                self.sniffer.start()
-
-                self.switch_buttons(start_button, stop_button)
+                input_filter += "port " + port
         except ValueError:
-            mb.showwarning(c.NOT_SNIFF, message=c.PORT_NOT_INT)
+            mb.showwarning(c.UNABLE_START, message=c.PORT_NOT_INT)
             return
 
+        self.sniffer = AsyncSniffer(
+            iface=interface,
+            filter=input_filter,
+            prn=self.packet_callback,
+            store=False,
+        )
+
+        self.sniffer.start()
+
+        self.switch_buttons(start_button, stop_button)
+
     def packet_callback(self, pkt):
-        now = datetime.now().strftime("%H:%M:%S")  # treeviewにinsert予定
+        if not self.protocol_checked(pkt):
+            return
+
+        now = datetime.now().strftime("%H:%M:%S.%f")
         print(pkt.summary())
-        print(type(pkt.summary()))
+
+    def protocol_checked(self, pkt):
+        if pkt.haslayer(TCP):
+            return self.tcp_checked.get()
+
+        if pkt.haslayer(UDP):
+            return self.udp_checked.get()
+
+        if pkt.haslayer(SCTP):
+            return self.sctp_checked.get()
+
+        if pkt.haslayer(ARP):
+            return self.arp_checked.get()
+
+        return False
+
+    def create_row(self):
+
+        return
 
     def stop_capture(self, start_button, stop_button):
         if hasattr(self, "sniffer") and self.sniffer.running:
-            try:
-                self.sniffer.stop()
-            except Scapy_Exception:
-                # socket初期化が完了する前に停止しようとした場合
-                self.root.after(
-                    100, lambda: self.stop_capture(start_button, stop_button)
-                )
-
-                return
+            self.sniffer.stop()
 
         self.switch_buttons(stop_button, start_button)
 

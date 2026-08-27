@@ -1,10 +1,21 @@
 FONT_SIZE = 16
-
-COMBO_DEFAULT = "ネットワークインターフェースを選択してください"
 HTTPS_PORT = 443
-PORT_NOT_INT = "ポートは数値を入力してください。"
 
-NOT_SNIFF = "パケットを取得できません"
+PROMPT_SELECT_INTERFACE = "ネットワークインターフェースを選択（未選択可）"
+PROMPT_INPUT_PORT = "ポート番号を入力（空欄可）"
+PROMPT_INPUT_IP = "IPアドレスを入力（空欄可）"
+SWITCH_AUTOSCROLL = "自動スクロール設定"
+START = "開始"
+STOP = "停止"
+DELETE = "消去"
+EXIT = "終了"
+
+CAPTURED_LIST = "パケット一覧"
+HEX_DUMP = "選択パケットの16進ダンプ"
+
+UNABLE_START = "キャプチャを開始できません"
+IP_NOT_FORMATTED = "IPアドレスの形式に誤りがあります。"
+PORT_NOT_INT = "ポート番号は数値を入力してください。"
 
 COLS = (
     "時刻",
