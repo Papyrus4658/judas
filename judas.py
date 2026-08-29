@@ -1,10 +1,8 @@
 import ipaddress
 import sys
 import tkinter as tk
-import tkinter.font as tkfont
 import tkinter.messagebox as mb
 from datetime import datetime
-from tkinter import ttk
 
 from scapy.all import (
     ARP,
@@ -15,10 +13,13 @@ from scapy.all import (
     AsyncSniffer,
     IPv6,
     hexdump,
-    scapy,
 )
 
+import buttons_frame as bf
+import captured_records_frame as crf
 import constants as c
+import details_frame as df
+import preconfigure_frame as prf
 
 
 class MainWin:
@@ -32,190 +33,41 @@ class MainWin:
         self.root.geometry(f"{max_width}x{max_height}")
         self.root.title("Judas")
 
-        # フォントを設定
-        proportional = tkfont.Font(family="BIZ_UDPGothic", size=c.FONT_SIZE)
-        fixed_width = tkfont.Font(family="monospace", size=c.FONT_SIZE)
-
         # 設定フレームを設定
-        config_frame = tk.Frame(self.root)
-
-        # プルダウンメニューを設定
-        interface_frame = tk.Frame(config_frame)
-
-        interface_label = tk.Label(
-            interface_frame, text=c.PROMPT_SELECT_INTERFACE, font=proportional
-        )
-
-        iface_names = self.get_ifaces()
-
-        interface = ttk.Combobox(
-            interface_frame,
-            values=iface_names,
-            state="readonly",
-            font=proportional,
-        )
-        interface.set(iface_names[0])
-
-        # フィルターを設定
-        filter_frame = tk.Frame(config_frame)
-
-        # 初期値を設定
-        self.tcp_checked = tk.BooleanVar()
-        self.udp_checked = tk.BooleanVar()
-        self.sctp_checked = tk.BooleanVar()
-        self.arp_checked = tk.BooleanVar()
-
-        self.tcp_checked.set(True)
-        self.udp_checked.set(True)
-        self.sctp_checked.set(True)
-        self.arp_checked.set(False)
-
-        tcp = tk.Checkbutton(
-            filter_frame,
-            text="TCP",
-            variable=self.tcp_checked,
-            font=proportional,
-        )
-        udp = tk.Checkbutton(
-            filter_frame,
-            text="UDP",
-            variable=self.udp_checked,
-            font=proportional,
-        )
-        sctp = tk.Checkbutton(
-            filter_frame,
-            text="SCTP",
-            variable=self.sctp_checked,
-            font=proportional,
-        )
-        arp = tk.Checkbutton(
-            filter_frame,
-            text="ARP",
-            variable=self.arp_checked,
-            font=proportional,
-        )
-
-        # ポート番号入力欄を設定
-        port_frame = tk.Frame(config_frame)
-        port_label = tk.Label(
-            port_frame,
-            text=c.PROMPT_INPUT_PORT,
-            font=proportional,
-        )
-        port = tk.Spinbox(
-            port_frame,
-            from_=0,
-            to=65535,
-            increment=1,
-            font=fixed_width,
-            textvariable=tk.IntVar(value=c.HTTPS_PORT),
-        )
-
-        # IPアドレス入力欄を設定
-        ipaddress_frame = tk.Frame(config_frame)
-        ipaddress_label = tk.Label(
-            ipaddress_frame,
-            text=c.PROMPT_INPUT_IP,
-            font=proportional,
-        )
-        ip = tk.Entry(ipaddress_frame, font=fixed_width)
-
-        # 自動スクロール選択ボタンを設定
-        self.autoscroll_checked = tk.BooleanVar()
-        self.autoscroll_checked.set(True)
-
-        autoscroll = tk.Checkbutton(
-            config_frame,
-            variable=self.autoscroll_checked,
-            text=c.SWITCH_AUTOSCROLL,
-            font=proportional,
-        )
+        self.__preconfigure_frame = prf.PreconfigureFrame(self.root)
 
         # 実行ボタンを設定
-        buttons_frame = tk.Frame(self.root)
-        start_button = tk.Button(
-            buttons_frame,
-            text=c.START,
-            font=proportional,
+        buttons_frame = bf.ButtonsFrame(self.root)
+
+        buttons_frame.start_button.configure(
             command=lambda: self.start_capture(
-                start_button,
-                stop_button,
-                interface.get(),
-                port.get(),
-                ip.get(),
+                buttons_frame.start_button,
+                buttons_frame.stop_button,
+                self.__preconfigure_frame.select_iface_frame.ifaces_combo.get(),
+                self.__preconfigure_frame.port_frame.port_spin.get(),
+                self.__preconfigure_frame.ip_frame.ip_entry.get(),
             ),
         )
-        stop_button = tk.Button(
-            buttons_frame,
-            text=c.STOP,
-            font=proportional,
-            command=lambda: self.stop_capture(start_button, stop_button),
+
+        buttons_frame.stop_button.configure(
+            command=lambda: self.stop_capture(
+                buttons_frame.start_button, buttons_frame.stop_button
+            )
         )
-        self.delete_button = tk.Button(
-            buttons_frame,
-            text=c.DELETE,
-            font=proportional,
-            state=tk.DISABLED,
-            command=lambda: self.delete_record(),
-        )
-        exit_button = tk.Button(
-            buttons_frame,
-            text=c.EXIT,
-            font=proportional,
-            command=lambda: self.exit_app(),
-        )
+
+        buttons_frame.delete_button.configure(command=lambda: self.delete_record())
+
+        buttons_frame.exit_button.configure(command=lambda: self.exit_app())
 
         # パケット一覧表示欄を設定
-        captured_list_frame = tk.Frame(self.root)
-        captured_list_title = tk.Label(
-            captured_list_frame,
-            text=c.CAPTURED_LIST,
-            font=proportional,
-        )
-        self.captured_list = ttk.Treeview(
-            captured_list_frame,
-            columns=c.COLS,
-            height=15,
-            show="headings",
-        )
-        self.captured_list.bind("<<TreeviewSelect>>", self.display_hex_dump)
+        captured_records_frame = crf.CapturedRecordsFrame(self.root)
 
-        for col in c.COLS:
-            self.captured_list.heading(col, text=col)
-
-        list_yscroll = ttk.Scrollbar(
-            captured_list_frame,
-            orient=tk.VERTICAL,
-            command=self.captured_list.yview,
+        captured_records_frame.captured_records.bind(
+            "<<TreeviewSelect>>", self.display_hex_dump
         )
-        self.captured_list.configure(yscroll=list_yscroll.set)
-
-        style = ttk.Style()
-        style.configure("Treeview", font=fixed_width, rowheight=25)
-        style.configure("Treeview.Heading", font=proportional)
 
         # 16進ダンプ表示欄を設定
-        hex_dump_frame = tk.Frame(self.root)
-        hex_dump_title = tk.Label(
-            hex_dump_frame,
-            text=c.HEX_DUMP,
-            font=proportional,
-        )
-        self.hex_dump = tk.Text(hex_dump_frame, font=fixed_width, wrap=tk.NONE)
-
-        details_yscroll = ttk.Scrollbar(
-            hex_dump_frame,
-            orient=tk.VERTICAL,
-            command=self.hex_dump.yview,
-        )
-        self.hex_dump.configure(yscroll=details_yscroll.set)
-
-        details_xscroll = ttk.Scrollbar(
-            hex_dump_frame,
-            orient=tk.HORIZONTAL,
-            command=self.hex_dump.xview,
-        )
-        self.hex_dump.configure(xscroll=details_xscroll.set)
+        details_frame = df.DetailsFrame(self.root)
 
         # rootの1列目を伸縮可能に設定
         self.root.grid_columnconfigure(1, weight=1)
@@ -223,68 +75,26 @@ class MainWin:
         self.root.grid_rowconfigure(9, weight=1)  # 16進ダンプの列
 
         # パケット一覧の列も伸縮可能に設定
-        captured_list_frame.grid_columnconfigure(1, weight=1)
-        captured_list_frame.grid_rowconfigure(5, weight=1)
+        captured_records_frame.grid_columnconfigure(1, weight=1)
+        captured_records_frame.grid_rowconfigure(5, weight=1)
 
         # 16進ダンプも伸縮可能に設定
-        hex_dump_frame.grid_columnconfigure(1, weight=1)
-        hex_dump_frame.grid_rowconfigure(5, weight=1)
+        details_frame.grid_columnconfigure(1, weight=1)
+        details_frame.grid_rowconfigure(5, weight=1)
 
         # ウィンドウに配置
-        config_frame.grid(row=1, column=1)
+        self.__preconfigure_frame.grid(row=1, column=1)
         buttons_frame.grid(row=1, column=5)
-        captured_list_frame.grid(
+        captured_records_frame.grid(
             row=5,
             column=1,
             sticky="nsew",
             columnspan=5,
         )
-        hex_dump_frame.grid(row=9, column=1, sticky="nsew", columnspan=5)
+        details_frame.grid(row=9, column=1, sticky="nsew", columnspan=5)
 
-        # 設定フレームに配置
-        interface_frame.grid(row=1, column=1, rowspan=5)
-        port_frame.grid(row=1, column=5, rowspan=5)
-        ipaddress_frame.grid(row=1, column=9, rowspan=5)
-        filter_frame.grid(row=1, column=13)
-        autoscroll.grid(row=5, column=13)
-
-        # ネットワークインターフェースフレームに配置
-        interface_label.grid(row=1, column=1)
-        interface.grid(row=5, column=1)
-
-        # フィルターフレームに配置
-        tcp.grid(row=1, column=1)
-        udp.grid(row=1, column=5)
-        sctp.grid(row=1, column=9)
-        arp.grid(row=1, column=13)
-
-        # ポート番号フレームに配置
-        port_label.grid(row=1, column=1)
-        port.grid(row=5, column=1)
-
-        # IPアドレスフレームに配置
-        ipaddress_label.grid(row=1, column=1)
-        ip.grid(row=5, column=1)
-
-        # ボタンフレームに配置
-        start_button.grid(row=1, column=1)
-        self.delete_button.grid(row=5, column=1)
-        exit_button.grid(row=9, column=1)
-
-        # パケット一覧フレームに配置
-        captured_list_title.grid(row=1, column=1)
-        self.captured_list.grid(row=5, column=1, sticky="nsew")
-        list_yscroll.grid(row=5, column=5, sticky="ns")
-
-        # 16進ダンプフレームに配置
-        hex_dump_title.grid(row=1, column=1)
-        self.hex_dump.grid(row=5, column=1, sticky="nsew")
-        details_yscroll.grid(row=5, column=5, sticky="ns")
-        details_xscroll.grid(row=9, column=1, sticky="ew")
-
-    def get_ifaces(self):
-        iface_names = list(scapy.interfaces.ifaces.data.keys())
-        return iface_names
+    def preconfigure_frame(self):
+        return self.__preconfigure_frame
 
     def start_capture(
         self,
@@ -347,21 +157,22 @@ class MainWin:
 
     def protocol_checked(self, pkt) -> bool:
         if pkt.haslayer(TCP):
-            return self.tcp_checked.get()
+            return self.preconfigure_frame.filters_frame.tcp_checked.get()
 
         if pkt.haslayer(UDP):
-            return self.udp_checked.get()
+            return self.preconfigure_frame.filters_frame.udp_checked.get()
 
         if pkt.haslayer(SCTP):
-            return self.sctp_checked.get()
+            return self.preconfigure_frame.filters_frame.sctp_checked.get()
 
         if pkt.haslayer(ARP):
-            return self.arp_checked.get()
+            return self.preconfigure_frame.filters_frame.arp_checked.get()
 
         return False
 
     def create_row(self, pkt):
-        now = datetime.now().strftime("%H:%M:%S.%f")
+        now = datetime.date().strftime("%H:%M:%S.%f")
+
         size = len(pkt)
 
         if pkt.haslayer(TCP):

@@ -1,5 +1,19 @@
+# import tkinter as tk
+
 FONT_SIZE = 16
 HTTPS_PORT = 443
+
+# TCP_CHECKED = tk.BooleanVar()
+# TCP_CHECKED.set(True)
+
+# UDP_CHECKED = tk.BooleanVar()
+# UDP_CHECKED.set(True)
+
+# SCTP_CHECKED = tk.BooleanVar()
+# SCTP_CHECKED.set(True)
+
+# ARP_CHECKED = tk.BooleanVar()
+# ARP_CHECKED.set(True)
 
 PROMPT_SELECT_INTERFACE = "ネットワークインターフェースを選択（未選択可）"
 PROMPT_INPUT_PORT = "ポート番号を入力（空欄可）"
