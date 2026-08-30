@@ -1,3 +1,4 @@
+import tkinter.font as tkFont
 from tkinter import ttk
 
 from scapy.all import scapy
@@ -11,12 +12,17 @@ class SelectIfaceFrame(ttk.Frame):
 
         select_iface_label = ttk.Label(self, text=c.PROMPT_SELECT_INTERFACE)
 
+        self.__defaultFont = tkFont.nametofont("TkDefaultFont")
+        self.__defaultFont.configure(size=c.FONT_SIZE)
+
         iface_names = self.get_ifaces()
-        self.__ifaces_combo = ttk.Combobox(self, values=iface_names, state="readonly")
-        self.ifaces_combo.set(iface_names[0])
+        self.__ifaces_combo = ttk.Combobox(
+            self, values=iface_names, state="readonly", font=self.__defaultFont
+        )
+        self.__ifaces_combo.set(iface_names[0])
 
         select_iface_label.grid(row=1, column=1)
-        self.ifaces_combo.grid(row=5, column=1)
+        self.__ifaces_combo.grid(row=5, column=1)
 
     @property
     def ifaces_combo(self):

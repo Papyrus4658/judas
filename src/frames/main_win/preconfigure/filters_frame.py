@@ -7,20 +7,20 @@ class FiltersFrame(ttk.Frame):
         super().__init__(preconfigure)
 
         self.__tcp_checked = tk.BooleanVar()
-        self.tcp_checked.set(True)
-        tcp_check = ttk.Checkbutton(self, text="TCP", variable=self.tcp_checked)
+        self.__tcp_checked.set(True)
+        tcp_check = ttk.Checkbutton(self, text="TCP", variable=self.__tcp_checked)
 
         self.__udp_checked = tk.BooleanVar()
-        self.udp_checked.set(True)
-        udp_check = ttk.Checkbutton(self, text="UDP", variable=self.udp_checked)
+        self.__udp_checked.set(True)
+        udp_check = ttk.Checkbutton(self, text="UDP", variable=self.__udp_checked)
 
         self.__sctp_checked = tk.BooleanVar()
-        self.sctp_checked.set(True)
-        sctp_check = ttk.Checkbutton(self, text="SCTP", variable=self.sctp_checked)
+        self.__sctp_checked.set(True)
+        sctp_check = ttk.Checkbutton(self, text="SCTP", variable=self.__sctp_checked)
 
         self.__arp_checked = tk.BooleanVar()
-        self.arp_checked.set(True)
-        arp_check = ttk.Checkbutton(self, text="ARP", variable=self.arp_checked)
+        self.__arp_checked.set(True)
+        arp_check = ttk.Checkbutton(self, text="ARP", variable=self.__arp_checked)
 
         tcp_check.grid(row=1, column=1)
         udp_check.grid(row=1, column=5)

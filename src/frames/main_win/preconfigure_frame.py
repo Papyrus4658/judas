@@ -19,15 +19,15 @@ class PreconfigureFrame(ttk.Frame):
         self.__filters_frame = ff.FiltersFrame(self)
 
         self.__autoscroll_checked = tk.BooleanVar()
-        self.autoscroll_checked.set(True)
+        self.__autoscroll_checked.set(True)
         autoscroll = ttk.Checkbutton(
-            self, variable=self.autoscroll_checked, text=c.SWITCH_AUTOSCROLL
+            self, variable=self.__autoscroll_checked, text=c.SWITCH_AUTOSCROLL
         )
 
-        self.select_iface_frame.grid(row=1, column=1, rowspan=5)
-        self.port_frame.grid(row=1, column=5, rowspan=5)
-        self.ip_frame.grid(row=1, column=9, rowspan=5)
-        self.filters_frame.grid(row=1, column=13)
+        self.__select_iface_frame.grid(row=1, column=1, rowspan=5)
+        self.__port_frame.grid(row=1, column=5, rowspan=5)
+        self.__ip_frame.grid(row=1, column=9, rowspan=5)
+        self.__filters_frame.grid(row=1, column=13)
         autoscroll.grid(row=5, column=13)
 
     @property

@@ -1,3 +1,8 @@
+from datetime import datetime
+
+LOCAL_TZ = datetime.now().astimezone().tzinfo
+TIME_FORMAT = "%H:%M:%S.%f"
+
 FONT_SIZE = 16
 HTTPS_PORT = 443
 
@@ -14,7 +19,9 @@ EXIT = "終了"
 COLS = ("時刻", "種別", "送信元IP", "送信元Port", "宛先IP", "宛先Port", "Flags", "Size")
 
 CAPTURED_LIST = "パケット一覧"
-HEX_DUMP = "選択パケットの16進ダンプ"
+HEX_DUMP = "選択パケットの詳細"
+PACKET_STRUCTURE_HEAD = "===Packet Structure===\n"
+HEX_DUMP_HEAD = "\n===Hex Dump===\n"
 
 UNABLE_START = "キャプチャを開始できません"
 IP_NOT_FORMATTED = "IPアドレスの形式に誤りがあります。"
