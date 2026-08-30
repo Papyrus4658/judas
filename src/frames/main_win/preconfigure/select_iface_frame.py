@@ -12,16 +12,11 @@ class SelectIfaceFrame(ttk.Frame):
         select_iface_label = ttk.Label(self, text=c.PROMPT_SELECT_INTERFACE)
 
         iface_names = self.get_ifaces()
-
-        self.__ifaces_combo = ttk.Combobox(
-            self,
-            values=iface_names,
-            state="readonly",
-        )
+        self.__ifaces_combo = ttk.Combobox(self, values=iface_names, state="readonly")
         self.ifaces_combo.set(iface_names[0])
 
         select_iface_label.grid(row=1, column=1)
-        self.__ifaces_combo.grid(row=5, column=1)
+        self.ifaces_combo.grid(row=5, column=1)
 
     @property
     def ifaces_combo(self):

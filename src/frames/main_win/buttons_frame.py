@@ -9,16 +9,13 @@ class ButtonsFrame(ttk.Frame):
         super().__init__(root)
 
         self.__start_button = ttk.Button(self, text=c.START)
-
         self.__stop_button = ttk.Button(self, text=c.STOP)
-
         self.__delete_button = ttk.Button(self, text=c.DELETE, state=tk.DISABLED)
-
         self.__exit_button = ttk.Button(self, text=c.EXIT)
 
-        self.__start_button.grid(row=1, column=1)
-        self.__delete_button.grid(row=5, column=1)
-        self.__exit_button.grid(row=9, column=1)
+        self.start_button.grid(row=1, column=1)
+        self.delete_button.grid(row=5, column=1)
+        self.exit_button.grid(row=9, column=1)
 
     @property
     def start_button(self):

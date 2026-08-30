@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['judas.py'],
+    ['src/judas.py'],
     pathex=[],
     binaries=[],
     datas=[],
