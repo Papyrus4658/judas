@@ -6,27 +6,30 @@ from scapy.all import scapy
 import constants as c
 
 
-class SelectIfaceFrame(ttk.Frame):
+class IfaceFrame(ttk.Frame):
     def __init__(self, preconfigure):
         super().__init__(preconfigure)
 
-        select_iface_label = ttk.Label(self, text=c.PROMPT_SELECT_INTERFACE)
+        title = ttk.Label(self, text=c.PROMPT_SELECT_IFACE)
 
         self.__defaultFont = tkFont.nametofont("TkDefaultFont")
         self.__defaultFont.configure(size=c.FONT_SIZE)
 
         iface_names = self.get_ifaces()
-        self.__ifaces_combo = ttk.Combobox(
-            self, values=iface_names, state="readonly", font=self.__defaultFont
+        self.__combo = ttk.Combobox(
+            self,
+            values=iface_names,
+            state="readonly",
+            font=self.__defaultFont,
         )
-        self.__ifaces_combo.set(iface_names[0])
+        self.__combo.set(iface_names[0])
 
-        select_iface_label.grid(row=1, column=1)
-        self.__ifaces_combo.grid(row=5, column=1)
+        title.grid(row=1, column=1)
+        self.__combo.grid(row=5, column=1)
 
     @property
-    def ifaces_combo(self):
-        return self.__ifaces_combo
+    def combo(self):
+        return self.__combo
 
     def get_ifaces(self):
         iface_names = list(scapy.interfaces.ifaces.data.keys())

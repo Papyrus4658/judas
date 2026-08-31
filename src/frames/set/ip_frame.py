@@ -11,12 +11,12 @@ class IpFrame(ttk.Frame):
         self.__fixedFont = tkFont.nametofont("TkFixedFont")
         self.__fixedFont.configure(size=c.FONT_SIZE)
 
-        ipaddress_label = ttk.Label(self, text=c.PROMPT_INPUT_IP)
-        self.__ip_entry = ttk.Entry(self, font=self.__fixedFont)
+        title = ttk.Label(self, text=c.PROMPT_INPUT_IP)
+        self.__entry = ttk.Entry(self, font=self.__fixedFont)
 
-        ipaddress_label.grid(row=1, column=1)
-        self.__ip_entry.grid(row=5, column=1)
+        title.grid(row=1, column=1)
+        self.__entry.grid(row=5, column=1)
 
     @property
-    def ip_entry(self):
-        return self.__ip_entry
+    def entry(self):
+        return self.__entry
