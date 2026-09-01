@@ -12,7 +12,7 @@ import constants as c
 import frames.buttons_frame as bf
 import frames.details_frame as df
 import frames.records_frame as crf
-import frames.set_frame as prf
+import frames.settings_frame as prf
 
 
 class MainWin:
@@ -29,16 +29,16 @@ class MainWin:
         __defaultFont = tkFont.nametofont("TkDefaultFont")
         __defaultFont.configure(size=c.FONT_SIZE)
 
-        self.__set_frame = prf.SetFrame(self.root)
+        self.__settings_frame = prf.SettingsFrame(self.root)
 
         self.__buttons_frame = bf.ButtonsFrame(self.root)
         self.__buttons_frame.start_button.configure(  # TODO
             command=lambda: self.start_capture(
                 self.__buttons_frame.start_button,
                 self.__buttons_frame.stop_button,
-                self.__set_frame.get_iface(),
-                self.__set_frame.get_port(),
-                self.__set_frame.get_ip(),
+                self.__settings_frame.get_iface(),
+                self.__settings_frame.get_port(),
+                self.__settings_frame.get_ip(),
             ),
         )
         self.__buttons_frame.stop_button.configure(
@@ -69,7 +69,7 @@ class MainWin:
         self.__details_frame.grid_columnconfigure(1, weight=1)
         self.__details_frame.grid_rowconfigure(5, weight=1)
 
-        self.__set_frame.grid(row=1, column=1)
+        self.__settings_frame.grid(row=1, column=1)
         self.__buttons_frame.grid(row=1, column=5)
         self.__records_frame.grid(
             row=5,
@@ -129,7 +129,7 @@ class MainWin:
             self.__buttons_frame.switch_buttons(stop_button, start_button)
 
     def packet_callback(self, pkt):
-        if not self.__set_frame.check_protocol(pkt):
+        if not self.__settings_frame.check_protocol(pkt):
             return
 
         self.create_record(pkt)
@@ -177,7 +177,7 @@ class MainWin:
 
         self.packet_store[iid] = pkt
 
-        if self.__set_frame.get_autoscroll():
+        if self.__settings_frame.get_autoscroll():
             self.__records_frame.y_scroll(1.0)
 
         self.__buttons_frame.normalize_delete_button()

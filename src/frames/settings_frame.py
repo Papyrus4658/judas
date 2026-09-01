@@ -5,13 +5,13 @@ from scapy.all import ARP, SCTP, TCP, UDP
 
 import constants as c
 
-from .set import filters_frame as ff
-from .set import iface_frame as sif
-from .set import ip_frame as ipf
-from .set import port_frame as pof
+from .setting__entries import filters_frame as ff
+from .setting__entries import iface_frame as sif
+from .setting__entries import ip_frame as ipf
+from .setting__entries import port_frame as pof
 
 
-class SetFrame(ttk.Frame):
+class SettingsFrame(ttk.Frame):
     def __init__(self, root):
         super().__init__(root)
 

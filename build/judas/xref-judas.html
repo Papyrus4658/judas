@@ -21,6 +21,7 @@ imports:
     <a href="#_collections_abc">_collections_abc</a>
  &#8226;   <a href="#_weakrefset">_weakrefset</a>
  &#8226;   <a href="#abc">abc</a>
+ &#8226;   <a href="#capture">capture</a>
  &#8226;   <a href="#codecs">codecs</a>
  &#8226;   <a href="#collections">collections</a>
  &#8226;   <a href="#constants">constants</a>
@@ -149,10 +150,10 @@ imports:
  &#8226;   <a href="#encodings.uu_codec">encodings.uu_codec</a>
  &#8226;   <a href="#encodings.zlib_codec">encodings.zlib_codec</a>
  &#8226;   <a href="#enum">enum</a>
- &#8226;   <a href="#frames.main_win.buttons_frame">frames.main_win.buttons_frame</a>
- &#8226;   <a href="#frames.main_win.captured_records_frame">frames.main_win.captured_records_frame</a>
- &#8226;   <a href="#frames.main_win.details_frame">frames.main_win.details_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure_frame">frames.main_win.preconfigure_frame</a>
+ &#8226;   <a href="#frames.buttons_frame">frames.buttons_frame</a>
+ &#8226;   <a href="#frames.details_frame">frames.details_frame</a>
+ &#8226;   <a href="#frames.records_frame">frames.records_frame</a>
+ &#8226;   <a href="#frames.settings_frame">frames.settings_frame</a>
  &#8226;   <a href="#functools">functools</a>
  &#8226;   <a href="#genericpath">genericpath</a>
  &#8226;   <a href="#heapq">heapq</a>
@@ -177,6 +178,7 @@ imports:
  &#8226;   <a href="#pyi_rth_pkgres.py">pyi_rth_pkgres.py</a>
  &#8226;   <a href="#pyi_rth_pkgutil.py">pyi_rth_pkgutil.py</a>
  &#8226;   <a href="#pyi_rth_setuptools.py">pyi_rth_setuptools.py</a>
+ &#8226;   <a href="#queue">queue</a>
  &#8226;   <a href="#re">re</a>
  &#8226;   <a href="#re._casefix">re._casefix</a>
  &#8226;   <a href="#re._compiler">re._compiler</a>
@@ -188,7 +190,6 @@ imports:
  &#8226;   <a href="#sre_constants">sre_constants</a>
  &#8226;   <a href="#sre_parse">sre_parse</a>
  &#8226;   <a href="#stat">stat</a>
- &#8226;   <a href="#sys">sys</a>
  &#8226;   <a href="#tkinter">tkinter</a>
  &#8226;   <a href="#tkinter.font">tkinter.font</a>
  &#8226;   <a href="#tkinter.messagebox">tkinter.messagebox</a>
@@ -10790,6 +10791,17 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="capture"></a>
+  <a target="code" href="/home/vmdebian/works/judas/src/capture.py" type="text/plain"><tt>capture</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imported by:
+    <a href="#judas.py">judas.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="cartopy"></a>
   <a target="code" href="" type="text/plain"><tt>cartopy</tt></a>
 <span class="moduletype">MissingModule</span>  <div class="import">
@@ -12629,14 +12641,19 @@ imported by:
   <a name="constants"></a>
   <a target="code" href="/home/vmdebian/works/judas/src/constants.py" type="text/plain"><tt>constants</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#datetime">datetime</a>
+
+  </div>
+  <div class="import">
 imported by:
-    <a href="#frames.main_win.buttons_frame">frames.main_win.buttons_frame</a>
- &#8226;   <a href="#frames.main_win.captured_records_frame">frames.main_win.captured_records_frame</a>
- &#8226;   <a href="#frames.main_win.details_frame">frames.main_win.details_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure.ip_frame">frames.main_win.preconfigure.ip_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure.port_frame">frames.main_win.preconfigure.port_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure.select_iface_frame">frames.main_win.preconfigure.select_iface_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure_frame">frames.main_win.preconfigure_frame</a>
+    <a href="#frames.buttons_frame">frames.buttons_frame</a>
+ &#8226;   <a href="#frames.details_frame">frames.details_frame</a>
+ &#8226;   <a href="#frames.records_frame">frames.records_frame</a>
+ &#8226;   <a href="#frames.setting__entries.iface_frame">frames.setting__entries.iface_frame</a>
+ &#8226;   <a href="#frames.setting__entries.ip_frame">frames.setting__entries.ip_frame</a>
+ &#8226;   <a href="#frames.setting__entries.port_frame">frames.setting__entries.port_frame</a>
+ &#8226;   <a href="#frames.settings_frame">frames.settings_frame</a>
  &#8226;   <a href="#judas.py">judas.py</a>
 
   </div>
@@ -14706,6 +14723,7 @@ imported by:
  &#8226;   <a href="#PIL._imagingcms">PIL._imagingcms</a>
  &#8226;   <a href="#_strptime">_strptime</a>
  &#8226;   <a href="#calendar">calendar</a>
+ &#8226;   <a href="#constants">constants</a>
  &#8226;   <a href="#dateutil.easter">dateutil.easter</a>
  &#8226;   <a href="#dateutil.parser._parser">dateutil.parser._parser</a>
  &#8226;   <a href="#dateutil.parser.isoparser">dateutil.parser.isoparser</a>
@@ -18751,205 +18769,196 @@ imported by:
   <a target="code" href="-" type="text/plain"><tt>frames</tt></a>
 <span class="moduletype">NamespacePackage</span>  <div class="import">
 imported by:
-    <a href="#frames.main_win">frames.main_win</a>
+    <a href="#frames.buttons_frame">frames.buttons_frame</a>
+ &#8226;   <a href="#frames.details_frame">frames.details_frame</a>
+ &#8226;   <a href="#frames.records_frame">frames.records_frame</a>
+ &#8226;   <a href="#frames.setting__entries">frames.setting__entries</a>
+ &#8226;   <a href="#frames.settings_frame">frames.settings_frame</a>
 
   </div>
 
 </div>
 
 <div class="node">
-  <a name="frames.main_win"></a>
-  <a target="code" href="-" type="text/plain"><tt>frames.main_win</tt></a>
+  <a name="frames.buttons_frame"></a>
+  <a target="code" href="/home/vmdebian/works/judas/src/frames/buttons_frame.py" type="text/plain"><tt>frames.buttons_frame</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#constants">constants</a>
+ &#8226;   <a href="#frames">frames</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#tkinter">tkinter</a>
+ &#8226;   <a href="#tkinter.ttk">tkinter.ttk</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#judas.py">judas.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="frames.details_frame"></a>
+  <a target="code" href="/home/vmdebian/works/judas/src/frames/details_frame.py" type="text/plain"><tt>frames.details_frame</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#constants">constants</a>
+ &#8226;   <a href="#frames">frames</a>
+ &#8226;   <a href="#tkinter">tkinter</a>
+ &#8226;   <a href="#tkinter.font">tkinter.font</a>
+ &#8226;   <a href="#tkinter.ttk">tkinter.ttk</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#judas.py">judas.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="frames.records_frame"></a>
+  <a target="code" href="/home/vmdebian/works/judas/src/frames/records_frame.py" type="text/plain"><tt>frames.records_frame</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#constants">constants</a>
+ &#8226;   <a href="#frames">frames</a>
+ &#8226;   <a href="#tkinter">tkinter</a>
+ &#8226;   <a href="#tkinter.font">tkinter.font</a>
+ &#8226;   <a href="#tkinter.ttk">tkinter.ttk</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#judas.py">judas.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="frames.setting__entries"></a>
+  <a target="code" href="-" type="text/plain"><tt>frames.setting__entries</tt></a>
 <span class="moduletype">NamespacePackage</span>  <div class="import">
 imports:
     <a href="#frames">frames</a>
+ &#8226;   <a href="#frames.setting__entries.filters_frame">frames.setting__entries.filters_frame</a>
+ &#8226;   <a href="#frames.setting__entries.iface_frame">frames.setting__entries.iface_frame</a>
+ &#8226;   <a href="#frames.setting__entries.ip_frame">frames.setting__entries.ip_frame</a>
+ &#8226;   <a href="#frames.setting__entries.port_frame">frames.setting__entries.port_frame</a>
 
   </div>
   <div class="import">
 imported by:
-    <a href="#frames.main_win.buttons_frame">frames.main_win.buttons_frame</a>
- &#8226;   <a href="#frames.main_win.captured_records_frame">frames.main_win.captured_records_frame</a>
- &#8226;   <a href="#frames.main_win.details_frame">frames.main_win.details_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure">frames.main_win.preconfigure</a>
- &#8226;   <a href="#frames.main_win.preconfigure_frame">frames.main_win.preconfigure_frame</a>
+    <a href="#frames.setting__entries.filters_frame">frames.setting__entries.filters_frame</a>
+ &#8226;   <a href="#frames.setting__entries.iface_frame">frames.setting__entries.iface_frame</a>
+ &#8226;   <a href="#frames.setting__entries.ip_frame">frames.setting__entries.ip_frame</a>
+ &#8226;   <a href="#frames.setting__entries.port_frame">frames.setting__entries.port_frame</a>
+ &#8226;   <a href="#frames.settings_frame">frames.settings_frame</a>
 
   </div>
 
 </div>
 
 <div class="node">
-  <a name="frames.main_win.buttons_frame"></a>
-  <a target="code" href="/home/vmdebian/works/judas/src/frames/main_win/buttons_frame.py" type="text/plain"><tt>frames.main_win.buttons_frame</tt></a>
+  <a name="frames.setting__entries.filters_frame"></a>
+  <a target="code" href="/home/vmdebian/works/judas/src/frames/setting__entries/filters_frame.py" type="text/plain"><tt>frames.setting__entries.filters_frame</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
-    <a href="#constants">constants</a>
- &#8226;   <a href="#frames.main_win">frames.main_win</a>
+    <a href="#frames.setting__entries">frames.setting__entries</a>
  &#8226;   <a href="#tkinter">tkinter</a>
  &#8226;   <a href="#tkinter.ttk">tkinter.ttk</a>
 
   </div>
   <div class="import">
 imported by:
-    <a href="#judas.py">judas.py</a>
+    <a href="#frames.setting__entries">frames.setting__entries</a>
+ &#8226;   <a href="#frames.settings_frame">frames.settings_frame</a>
 
   </div>
 
 </div>
 
 <div class="node">
-  <a name="frames.main_win.captured_records_frame"></a>
-  <a target="code" href="/home/vmdebian/works/judas/src/frames/main_win/captured_records_frame.py" type="text/plain"><tt>frames.main_win.captured_records_frame</tt></a>
+  <a name="frames.setting__entries.iface_frame"></a>
+  <a target="code" href="/home/vmdebian/works/judas/src/frames/setting__entries/iface_frame.py" type="text/plain"><tt>frames.setting__entries.iface_frame</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#constants">constants</a>
- &#8226;   <a href="#frames.main_win">frames.main_win</a>
- &#8226;   <a href="#tkinter">tkinter</a>
- &#8226;   <a href="#tkinter.ttk">tkinter.ttk</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#judas.py">judas.py</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="frames.main_win.details_frame"></a>
-  <a target="code" href="/home/vmdebian/works/judas/src/frames/main_win/details_frame.py" type="text/plain"><tt>frames.main_win.details_frame</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#constants">constants</a>
- &#8226;   <a href="#frames.main_win">frames.main_win</a>
- &#8226;   <a href="#tkinter">tkinter</a>
- &#8226;   <a href="#tkinter.ttk">tkinter.ttk</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#judas.py">judas.py</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="frames.main_win.preconfigure"></a>
-  <a target="code" href="-" type="text/plain"><tt>frames.main_win.preconfigure</tt></a>
-<span class="moduletype">NamespacePackage</span>  <div class="import">
-imports:
-    <a href="#frames.main_win">frames.main_win</a>
- &#8226;   <a href="#frames.main_win.preconfigure.filters_frame">frames.main_win.preconfigure.filters_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure.ip_frame">frames.main_win.preconfigure.ip_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure.port_frame">frames.main_win.preconfigure.port_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure.select_iface_frame">frames.main_win.preconfigure.select_iface_frame</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#frames.main_win.preconfigure.filters_frame">frames.main_win.preconfigure.filters_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure.ip_frame">frames.main_win.preconfigure.ip_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure.port_frame">frames.main_win.preconfigure.port_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure.select_iface_frame">frames.main_win.preconfigure.select_iface_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure_frame">frames.main_win.preconfigure_frame</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="frames.main_win.preconfigure.filters_frame"></a>
-  <a target="code" href="/home/vmdebian/works/judas/src/frames/main_win/preconfigure/filters_frame.py" type="text/plain"><tt>frames.main_win.preconfigure.filters_frame</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#frames.main_win.preconfigure">frames.main_win.preconfigure</a>
- &#8226;   <a href="#tkinter">tkinter</a>
- &#8226;   <a href="#tkinter.ttk">tkinter.ttk</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#frames.main_win.preconfigure">frames.main_win.preconfigure</a>
- &#8226;   <a href="#frames.main_win.preconfigure_frame">frames.main_win.preconfigure_frame</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="frames.main_win.preconfigure.ip_frame"></a>
-  <a target="code" href="/home/vmdebian/works/judas/src/frames/main_win/preconfigure/ip_frame.py" type="text/plain"><tt>frames.main_win.preconfigure.ip_frame</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#constants">constants</a>
- &#8226;   <a href="#frames.main_win.preconfigure">frames.main_win.preconfigure</a>
- &#8226;   <a href="#tkinter">tkinter</a>
- &#8226;   <a href="#tkinter.ttk">tkinter.ttk</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#frames.main_win.preconfigure">frames.main_win.preconfigure</a>
- &#8226;   <a href="#frames.main_win.preconfigure_frame">frames.main_win.preconfigure_frame</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="frames.main_win.preconfigure.port_frame"></a>
-  <a target="code" href="/home/vmdebian/works/judas/src/frames/main_win/preconfigure/port_frame.py" type="text/plain"><tt>frames.main_win.preconfigure.port_frame</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#constants">constants</a>
- &#8226;   <a href="#frames.main_win.preconfigure">frames.main_win.preconfigure</a>
- &#8226;   <a href="#tkinter">tkinter</a>
- &#8226;   <a href="#tkinter.ttk">tkinter.ttk</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#frames.main_win.preconfigure">frames.main_win.preconfigure</a>
- &#8226;   <a href="#frames.main_win.preconfigure_frame">frames.main_win.preconfigure_frame</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="frames.main_win.preconfigure.select_iface_frame"></a>
-  <a target="code" href="/home/vmdebian/works/judas/src/frames/main_win/preconfigure/select_iface_frame.py" type="text/plain"><tt>frames.main_win.preconfigure.select_iface_frame</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#constants">constants</a>
- &#8226;   <a href="#frames.main_win.preconfigure">frames.main_win.preconfigure</a>
+ &#8226;   <a href="#frames.setting__entries">frames.setting__entries</a>
  &#8226;   <a href="#scapy.all">scapy.all</a>
  &#8226;   <a href="#tkinter">tkinter</a>
+ &#8226;   <a href="#tkinter.font">tkinter.font</a>
  &#8226;   <a href="#tkinter.ttk">tkinter.ttk</a>
 
   </div>
   <div class="import">
 imported by:
-    <a href="#frames.main_win.preconfigure">frames.main_win.preconfigure</a>
- &#8226;   <a href="#frames.main_win.preconfigure_frame">frames.main_win.preconfigure_frame</a>
+    <a href="#frames.setting__entries">frames.setting__entries</a>
+ &#8226;   <a href="#frames.settings_frame">frames.settings_frame</a>
 
   </div>
 
 </div>
 
 <div class="node">
-  <a name="frames.main_win.preconfigure_frame"></a>
-  <a target="code" href="/home/vmdebian/works/judas/src/frames/main_win/preconfigure_frame.py" type="text/plain"><tt>frames.main_win.preconfigure_frame</tt></a>
+  <a name="frames.setting__entries.ip_frame"></a>
+  <a target="code" href="/home/vmdebian/works/judas/src/frames/setting__entries/ip_frame.py" type="text/plain"><tt>frames.setting__entries.ip_frame</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#constants">constants</a>
- &#8226;   <a href="#frames.main_win">frames.main_win</a>
- &#8226;   <a href="#frames.main_win.preconfigure">frames.main_win.preconfigure</a>
- &#8226;   <a href="#frames.main_win.preconfigure.filters_frame">frames.main_win.preconfigure.filters_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure.ip_frame">frames.main_win.preconfigure.ip_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure.port_frame">frames.main_win.preconfigure.port_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure.select_iface_frame">frames.main_win.preconfigure.select_iface_frame</a>
+ &#8226;   <a href="#frames.setting__entries">frames.setting__entries</a>
+ &#8226;   <a href="#tkinter">tkinter</a>
+ &#8226;   <a href="#tkinter.font">tkinter.font</a>
+ &#8226;   <a href="#tkinter.ttk">tkinter.ttk</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#frames.setting__entries">frames.setting__entries</a>
+ &#8226;   <a href="#frames.settings_frame">frames.settings_frame</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="frames.setting__entries.port_frame"></a>
+  <a target="code" href="/home/vmdebian/works/judas/src/frames/setting__entries/port_frame.py" type="text/plain"><tt>frames.setting__entries.port_frame</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#constants">constants</a>
+ &#8226;   <a href="#frames.setting__entries">frames.setting__entries</a>
+ &#8226;   <a href="#tkinter">tkinter</a>
+ &#8226;   <a href="#tkinter.font">tkinter.font</a>
+ &#8226;   <a href="#tkinter.ttk">tkinter.ttk</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#frames.setting__entries">frames.setting__entries</a>
+ &#8226;   <a href="#frames.settings_frame">frames.settings_frame</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="frames.settings_frame"></a>
+  <a target="code" href="/home/vmdebian/works/judas/src/frames/settings_frame.py" type="text/plain"><tt>frames.settings_frame</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#constants">constants</a>
+ &#8226;   <a href="#frames">frames</a>
+ &#8226;   <a href="#frames.setting__entries">frames.setting__entries</a>
+ &#8226;   <a href="#frames.setting__entries.filters_frame">frames.setting__entries.filters_frame</a>
+ &#8226;   <a href="#frames.setting__entries.iface_frame">frames.setting__entries.iface_frame</a>
+ &#8226;   <a href="#frames.setting__entries.ip_frame">frames.setting__entries.ip_frame</a>
+ &#8226;   <a href="#frames.setting__entries.port_frame">frames.setting__entries.port_frame</a>
+ &#8226;   <a href="#scapy.all">scapy.all</a>
  &#8226;   <a href="#tkinter">tkinter</a>
  &#8226;   <a href="#tkinter.ttk">tkinter.ttk</a>
 
@@ -52579,6 +52588,7 @@ imported by:
     <a href="#concurrent.futures.process">concurrent.futures.process</a>
  &#8226;   <a href="#concurrent.futures.thread">concurrent.futures.thread</a>
  &#8226;   <a href="#jedi.inference.compiled.subprocess">jedi.inference.compiled.subprocess</a>
+ &#8226;   <a href="#judas.py">judas.py</a>
  &#8226;   <a href="#logging.config">logging.config</a>
  &#8226;   <a href="#logging.handlers">logging.handlers</a>
  &#8226;   <a href="#more_itertools.more">more_itertools.more</a>
@@ -53416,7 +53426,8 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#frames.main_win.preconfigure.select_iface_frame">frames.main_win.preconfigure.select_iface_frame</a>
+    <a href="#frames.setting__entries.iface_frame">frames.setting__entries.iface_frame</a>
+ &#8226;   <a href="#frames.settings_frame">frames.settings_frame</a>
  &#8226;   <a href="#judas.py">judas.py</a>
 
   </div>
@@ -64131,6 +64142,7 @@ imported by:
  &#8226;   <a href="#filecmp">filecmp</a>
  &#8226;   <a href="#fileinput">fileinput</a>
  &#8226;   <a href="#fractions">fractions</a>
+ &#8226;   <a href="#frames.buttons_frame">frames.buttons_frame</a>
  &#8226;   <a href="#ftplib">ftplib</a>
  &#8226;   <a href="#getopt">getopt</a>
  &#8226;   <a href="#getpass">getpass</a>
@@ -64167,7 +64179,6 @@ imported by:
  &#8226;   <a href="#jinja2.lexer">jinja2.lexer</a>
  &#8226;   <a href="#jinja2.loaders">jinja2.loaders</a>
  &#8226;   <a href="#jinja2.runtime">jinja2.runtime</a>
- &#8226;   <a href="#judas.py">judas.py</a>
  &#8226;   <a href="#linecache">linecache</a>
  &#8226;   <a href="#locale">locale</a>
  &#8226;   <a href="#logging">logging</a>
@@ -64948,14 +64959,14 @@ imports:
   <div class="import">
 imported by:
     <a href="#IPython.lib.clipboard">IPython.lib.clipboard</a>
- &#8226;   <a href="#frames.main_win.buttons_frame">frames.main_win.buttons_frame</a>
- &#8226;   <a href="#frames.main_win.captured_records_frame">frames.main_win.captured_records_frame</a>
- &#8226;   <a href="#frames.main_win.details_frame">frames.main_win.details_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure.filters_frame">frames.main_win.preconfigure.filters_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure.ip_frame">frames.main_win.preconfigure.ip_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure.port_frame">frames.main_win.preconfigure.port_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure.select_iface_frame">frames.main_win.preconfigure.select_iface_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure_frame">frames.main_win.preconfigure_frame</a>
+ &#8226;   <a href="#frames.buttons_frame">frames.buttons_frame</a>
+ &#8226;   <a href="#frames.details_frame">frames.details_frame</a>
+ &#8226;   <a href="#frames.records_frame">frames.records_frame</a>
+ &#8226;   <a href="#frames.setting__entries.filters_frame">frames.setting__entries.filters_frame</a>
+ &#8226;   <a href="#frames.setting__entries.iface_frame">frames.setting__entries.iface_frame</a>
+ &#8226;   <a href="#frames.setting__entries.ip_frame">frames.setting__entries.ip_frame</a>
+ &#8226;   <a href="#frames.setting__entries.port_frame">frames.setting__entries.port_frame</a>
+ &#8226;   <a href="#frames.settings_frame">frames.settings_frame</a>
  &#8226;   <a href="#judas.py">judas.py</a>
  &#8226;   <a href="#tkinter.commondialog">tkinter.commondialog</a>
  &#8226;   <a href="#tkinter.constants">tkinter.constants</a>
@@ -65010,7 +65021,12 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#judas.py">judas.py</a>
+    <a href="#frames.details_frame">frames.details_frame</a>
+ &#8226;   <a href="#frames.records_frame">frames.records_frame</a>
+ &#8226;   <a href="#frames.setting__entries.iface_frame">frames.setting__entries.iface_frame</a>
+ &#8226;   <a href="#frames.setting__entries.ip_frame">frames.setting__entries.ip_frame</a>
+ &#8226;   <a href="#frames.setting__entries.port_frame">frames.setting__entries.port_frame</a>
+ &#8226;   <a href="#judas.py">judas.py</a>
 
   </div>
 
@@ -65043,14 +65059,14 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#frames.main_win.buttons_frame">frames.main_win.buttons_frame</a>
- &#8226;   <a href="#frames.main_win.captured_records_frame">frames.main_win.captured_records_frame</a>
- &#8226;   <a href="#frames.main_win.details_frame">frames.main_win.details_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure.filters_frame">frames.main_win.preconfigure.filters_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure.ip_frame">frames.main_win.preconfigure.ip_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure.port_frame">frames.main_win.preconfigure.port_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure.select_iface_frame">frames.main_win.preconfigure.select_iface_frame</a>
- &#8226;   <a href="#frames.main_win.preconfigure_frame">frames.main_win.preconfigure_frame</a>
+    <a href="#frames.buttons_frame">frames.buttons_frame</a>
+ &#8226;   <a href="#frames.details_frame">frames.details_frame</a>
+ &#8226;   <a href="#frames.records_frame">frames.records_frame</a>
+ &#8226;   <a href="#frames.setting__entries.filters_frame">frames.setting__entries.filters_frame</a>
+ &#8226;   <a href="#frames.setting__entries.iface_frame">frames.setting__entries.iface_frame</a>
+ &#8226;   <a href="#frames.setting__entries.ip_frame">frames.setting__entries.ip_frame</a>
+ &#8226;   <a href="#frames.setting__entries.port_frame">frames.setting__entries.port_frame</a>
+ &#8226;   <a href="#frames.settings_frame">frames.settings_frame</a>
  &#8226;   <a href="#tkinter">tkinter</a>
 
   </div>
