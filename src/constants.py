@@ -7,8 +7,8 @@ FONT_SIZE = 16
 HTTPS_PORT = 443
 
 PROMPT_SELECT_IFACE = "ネットワークインターフェースを選択"
-PROMPT_INPUT_PORT = "ポート番号を入力（空欄可）"
-PROMPT_INPUT_IP = "IPアドレスを入力（空欄可）"
+PROMPT_INPUT_PORT = "ポート番号を入力"
+PROMPT_INPUT_IP = "IPアドレスを入力"
 SWITCH_AUTOSCROLL = "自動スクロール設定"
 
 START = "開始"
