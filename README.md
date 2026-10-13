@@ -4,7 +4,7 @@ I named it “Judas.”
 
 This name is a recursive acronym for 
 
-***“Judas: Ubiquitous Data Analyzing System”***
+***“Judas: Ubiquitous Data Analysis System”***
 
 or simply means a peephole.
 
