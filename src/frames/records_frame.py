@@ -31,7 +31,7 @@ class RecordsFrame(ttk.Frame):
         self._records.configure(yscroll=yscroll.set)
 
         style = ttk.Style()
-        style.configure("Treeview", rowheight=25)
+        style.configure("Treeview", rowheight=c.FONT_SIZE * 2)
         style.configure("Treeview.Heading", font=default_font)
 
         title.grid(row=1, column=1)

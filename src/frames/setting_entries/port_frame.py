@@ -17,7 +17,7 @@ class PortFrame(ttk.Frame):
         self._spin.set(c.HTTPS_PORT)
 
         style = ttk.Style()
-        style.configure("TSpinbox", arrowsize=c.FONT_SIZE)
+        style.configure("TSpinbox", arrowsize=c.FONT_SIZE * 2)
 
         title.grid(row=1, column=1)
         self._spin.grid(row=5, column=1)
